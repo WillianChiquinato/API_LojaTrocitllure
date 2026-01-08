@@ -6,7 +6,7 @@ obj/
 .vs/
 *.user
 *.suo
-*.userosscache
+*.userosscache  
 *.sln.docstates
 
 ## Rider / VS Code
