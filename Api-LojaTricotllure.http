@@ -1,0 +1,6 @@
+@Api_LojaTricotllure_HostAddress = http://localhost:5254
+
+GET {{Api_LojaTricotllure_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
