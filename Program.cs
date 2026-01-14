@@ -1,8 +1,16 @@
 using Api_LojaTricotllure.Data;
 using Microsoft.EntityFrameworkCore;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
+var connectionString =
+    $"Server={Environment.GetEnvironmentVariable("DB_SERVER")};" +
+    $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
+    $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
+    $"Uid={Environment.GetEnvironmentVariable("DB_USER")};" +
+    $"Pwd={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
+    $"SslMode={Environment.GetEnvironmentVariable("DB_SSL")};";
 
 builder.Services.AddControllers();
 

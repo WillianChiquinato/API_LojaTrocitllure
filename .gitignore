@@ -26,6 +26,7 @@ publish/
 ## Secrets
 appsettings.Development.json
 appsettings.Local.json
+.env
 
 ## Certificates
 *.pfx

@@ -5,12 +5,12 @@ namespace Api_LojaTricotllure.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PersonagemController : ControllerBase
+public class AdminUserController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public PersonagemController(AppDbContext context)
-    { 
+    public AdminUserController(AppDbContext context)
+    {
         _context = context;
     }
 }
