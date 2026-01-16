@@ -1,4 +1,6 @@
+using System.Reflection;
 using Api_LojaTricotllure.Data;
+using Api_LojaTricotllure.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.Load();
@@ -19,6 +21,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddProjectDependencies();
 
 var app = builder.Build();
 

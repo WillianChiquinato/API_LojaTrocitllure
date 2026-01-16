@@ -1,0 +1,41 @@
+﻿using Api_LojaTricotllure.Interfaces;
+using Api_LojaTricotllure.Interfaces.Repository;
+using Api_LojaTricotllure.Models;
+using Api_LojaTricotllure.Response;
+
+namespace Api_LojaTricotllure.Services;
+
+public class RetailService : IRetailService
+{
+    private readonly ILogger<RetailService> _logger;
+    private readonly IRetailRepository _retailRepository;
+    
+    public RetailService(ILogger<RetailService> logger, IRetailRepository retailRepository)
+    {
+        _logger = logger;
+        _retailRepository = retailRepository;
+    }
+    
+    public async Task<CustomResponse<List<Retail>>> GetRetails()
+    {
+        try
+        {
+            var retails = await _retailRepository.GetRetails();
+
+            return new CustomResponse<List<Retail>>(
+                true,
+                new List<string>(),
+                retails,
+                retails.Count
+            );
+        }
+        catch (Exception ex)
+        {
+            return new CustomResponse<List<Retail>>(
+                false,
+                new List<string> { ex.Message },
+                null
+            );
+        }
+    }
+}
