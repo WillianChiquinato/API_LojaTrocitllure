@@ -10,6 +10,9 @@ public class Retail
     [Column("id")]
     public int Id { get; set; }
     
+    [Column("active")]
+    public bool Active { get; set; }
+    
     [Column("image")]
     public string ImageURL { get; set; }
     

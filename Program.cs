@@ -14,6 +14,22 @@ var connectionString =
     $"Pwd={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
     $"SslMode={Environment.GetEnvironmentVariable("DB_SSL")};";
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins(
+                    "http://localhost:3000"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+
 builder.Services.AddControllers();
 
 // Swagger
@@ -25,6 +41,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connecti
 builder.Services.AddProjectDependencies();
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment())
 {

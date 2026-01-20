@@ -16,6 +16,8 @@ public class RetailRepository : IRetailRepository
     
     public async Task<List<Retail>> GetRetails()
     {
-        return await _efDbContext.Retails.ToListAsync();
+        return await _efDbContext.Retails
+            .Where(ac => ac.Active == true)
+            .ToListAsync();
     }
 }
