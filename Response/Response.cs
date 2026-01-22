@@ -2,10 +2,10 @@
 
 public class CustomResponse<T>
 {
-    public virtual bool Success { get; set; }
-    public virtual List<string> Errors { get; set; }
-    public virtual T Result {  get; set; }
-    public virtual int? TotalRows { get; set; }
+    public bool Success { get; }
+    public List<string> Errors { get; set; }
+    public T Result {  get; set; }
+    public int? TotalRows { get; set; }
     
     public CustomResponse(bool success, List<string> errors, T result, int? totalRows = null)
     {
@@ -14,4 +14,10 @@ public class CustomResponse<T>
         Result = result;
         TotalRows = totalRows;
     }
+    
+    public static CustomResponse<T> SuccessTrade(T result) =>
+        new(true, new List<string>(), result);
+
+    public static CustomResponse<T> Fail(params string[] errors) =>
+        new(false, errors.ToList(), default);
 }

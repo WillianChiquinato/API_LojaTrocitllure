@@ -32,7 +32,7 @@ public class User
     public int? PhoneDDD { get; set; }
     
     [Column("primary_phone")]
-    public int? PrimaryPhone { get; set; }
+    public string? PrimaryPhone { get; set; }
     
     [Column("sex")]
     public string? Sex { get; set; }

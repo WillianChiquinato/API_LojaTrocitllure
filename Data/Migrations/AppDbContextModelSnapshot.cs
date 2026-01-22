@@ -608,8 +608,8 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("phoneDDD");
 
-                    b.Property<int?>("PrimaryPhone")
-                        .HasColumnType("int")
+                    b.Property<string>("PrimaryPhone")
+                        .HasColumnType("longtext")
                         .HasColumnName("primary_phone");
 
                     b.Property<string>("Sex")
