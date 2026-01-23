@@ -16,7 +16,7 @@ namespace Api_LojaTricotllure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Api_LojaTricotllure.Models.AdminUser", b =>
@@ -281,7 +281,6 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("is_primary");
 
                     b.Property<int?>("ProductId")
-                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 
@@ -510,7 +509,6 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("updated_at");
 
                     b.Property<int?>("UserId")
-                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
@@ -587,6 +585,11 @@ namespace Api_LojaTricotllure.Data.Migrations
                     b.Property<DateTime?>("FirstAcess")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("first_acess");
+
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("google_id");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
@@ -713,9 +716,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.ProductConsolidateds", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Product");
                 });
@@ -754,9 +755,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

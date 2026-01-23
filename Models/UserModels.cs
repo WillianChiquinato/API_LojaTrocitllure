@@ -10,6 +10,9 @@ public class User
     [Column("id")]
     public int Id { get; set; }
     
+    [Column("google_id")]
+    public string GoogleId { get; set; }
+    
     [Column("is_active")]
     public bool IsActive { get; set; }
     

@@ -3,6 +3,7 @@ using Api_LojaTricotllure.Interfaces;
 using Api_LojaTricotllure.Interfaces.Repository;
 using Api_LojaTricotllure.Models;
 using Api_LojaTricotllure.Response;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api_LojaTricotllure.Services;
 
@@ -50,6 +51,20 @@ public class UserService : IUserService
             return CustomResponse<User>.Fail("Erro ao buscar usuario", ex.Message);
         }
     }
+    
+    public async Task<CustomResponse<User>> GoogleLogin(string emailUnique)
+    {
+        try
+        {
+            var googleUser = await _userRepository.ReadUserWithEmail(emailUnique);
+            
+            return CustomResponse<User>.SuccessTrade(googleUser);
+        }
+        catch (Exception ex)
+        {
+            return CustomResponse<User>.Fail("Erro interno ao logar com google", ex.Message);
+        }
+    }
 
     public async Task<CustomResponse<User>> CreateUser(User user)
     {
@@ -64,14 +79,22 @@ public class UserService : IUserService
             if (emailExists != null)
                 return CustomResponse<User>.Fail("Email cadastrado na plataforma, tente outro!!");
 
-            var phoneClean = Regex.Replace(user.PrimaryPhone.ToString(), @"\D", "");
+            var phoneClean = String.Empty;
+            if (user.PrimaryPhone != null)
+            {
+                phoneClean = Regex.Replace(user.PrimaryPhone.ToString(), @"\D", "");
+            }
 
-            if (phoneClean.Length < 10 || phoneClean.Length > 11)
-                return CustomResponse<User>.Fail("Telefone inválido");
+            if (!phoneClean.IsNullOrEmpty())
+            {
+                if (phoneClean.Length < 10 || phoneClean.Length > 11)
+                    return CustomResponse<User>.Fail("Telefone inválido");
 
-            user.PhoneDDD = int.Parse(phoneClean[..2]);
-            user.PrimaryPhone = phoneClean[2..];
-            user.DocumentType = user.CpfCnpj.Length == 11 ? 1 : 2;
+                user.PhoneDDD = int.Parse(phoneClean[..2]);
+                user.PrimaryPhone = phoneClean[2..];
+            }
+            
+            user.DocumentType = user.CpfCnpj != null && user.CpfCnpj.Length == 11 ? 1 : 2;
             user.IsActive = true;
             
             user.CreatedAt = DateTime.Now;

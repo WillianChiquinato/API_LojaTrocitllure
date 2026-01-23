@@ -9,4 +9,5 @@ public interface IUserService
     public Task<CustomResponse<User>> GetUserByEmailAndPassword(string email, string password);
     public Task<CustomResponse<User>> CreateUser(User user);
     public Task<CustomResponse<User>> FirstAcessUser(int id);
+    public Task<CustomResponse<User>> GoogleLogin(string emailUnique);
 }

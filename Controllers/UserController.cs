@@ -4,6 +4,7 @@ using Api_LojaTricotllure.Models;
 using Api_LojaTricotllure.Models.DTO;
 using Api_LojaTricotllure.Response;
 using Api_LojaTricotllure.Services;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,6 +47,55 @@ public class UserController : ControllerBase
                 user.Result.PhoneDDD,
                 user.Result.PrimaryPhone
             }
+        });
+    }
+    
+    [HttpPost("LoginGoogle")]
+    public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request)
+    {
+        var payload = await GoogleJsonWebSignature.ValidateAsync(
+            request.token,
+            new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { "163593940017-ci68c09h7pvot2i66i6nv7bd1o6soh45.apps.googleusercontent.com" }
+            });
+
+        var userResponse = await _userService.GoogleLogin(payload.Email);
+        User user;
+
+        if (userResponse.Result == null)
+        {
+            user = new User
+            {
+                UserName = payload.GivenName,
+                Name = payload.Name,
+                DocumentType = 2,
+                Email = payload.Email,
+                GoogleId = payload.Subject,
+                FirstAcess = DateTime.Now,
+                LastAcess = DateTime.Now,
+                Sex = null,
+                CpfCnpj = null,
+                PhoneDDD = null,
+                PrimaryPhone = null,
+                DateOfBirth = null,
+                Password = null,
+            };
+
+            var createResponse = await _userService.CreateUser(user);
+            user = createResponse.Result;
+        }
+        else
+        {
+            user = userResponse.Result;
+        }
+
+        var jwt = _tokenService.GenerateToken(user);
+
+        return Ok(new
+        {
+            token = jwt,
+            user
         });
     }
     
