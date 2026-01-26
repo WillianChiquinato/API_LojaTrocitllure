@@ -25,7 +25,8 @@ public class UserController : ControllerBase
         _tokenService = tokenService;
     }
     
-    [HttpPost("Login")]
+    [HttpPost]
+    [Route("Login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var user = await _userService.GetUserByEmailAndPassword(request.Email, request.Password);
@@ -50,7 +51,8 @@ public class UserController : ControllerBase
         });
     }
     
-    [HttpPost("LoginGoogle")]
+    [HttpPost]
+    [Route("LoginGoogle")]
     public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request)
     {
         var payload = await GoogleJsonWebSignature.ValidateAsync(
@@ -100,6 +102,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     [Route("GetUsers")]
     public async Task<IActionResult> GetUsers()
     {

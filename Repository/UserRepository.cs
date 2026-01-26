@@ -31,7 +31,6 @@ public class UserRepository :  IUserRepository
 
     public async Task<User> CreateUser(User user)
     {
-        var teste = user;
         _efDbContext.Users.Add(user);
         await _efDbContext.SaveChangesAsync();
 

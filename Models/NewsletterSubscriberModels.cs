@@ -23,7 +23,7 @@ public class NewsletterSubscriber
     public DateTime ConfirmedAt { get; set; }
     
     [Column("unsubscribed_at")]
-    public DateTime UnsubscribedAt { get; set; }
+    public DateTime? UnsubscribedAt { get; set; }
     
     [Column("source")]
     public string Source { get; set; }

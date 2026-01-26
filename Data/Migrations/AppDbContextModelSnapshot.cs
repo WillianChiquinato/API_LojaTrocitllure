@@ -109,7 +109,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("source");
 
-                    b.Property<DateTime>("UnsubscribedAt")
+                    b.Property<DateTime?>("UnsubscribedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("unsubscribed_at");
 
