@@ -24,17 +24,11 @@ public class UserService : IUserService
         {
             var users = await _userRepository.GetUsers();
             
-            return new CustomResponse<List<User>>(
-                true,
-                new List<string>(),
-                users,
-                users.Count
-            );
+            return CustomResponse<List<User>>.SuccessTrade(users);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            return CustomResponse<List<User>>.Fail("Erro ao buscar usuários", e.Message);
         }
     }
 

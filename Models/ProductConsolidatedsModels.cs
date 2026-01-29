@@ -22,8 +22,8 @@ public class ProductConsolidateds
     [Column("is_active")]
     public bool IsActive { get; set; }
     
-    [Column("is_emphasis")]
-    public bool IsEmphasis { get; set; }
+    [Column("sold_out_count")]
+    public int SoldOutCount { get; set; }
     
     [Column("created_at", TypeName = "datetime(6)")]
     public DateTime? CreatedAt { get; set; }

@@ -22,11 +22,11 @@ public class ProductConsolidatedsSku
     [Column("size")]
     public string? Size { get; set; }
     
-    [Column("price")]
+    [Column("price", TypeName = "decimal(10,2)")]
     public decimal? Price { get; set; }
     
     [Column("stock")]
-    public decimal? Stock { get; set; }
+    public int? Stock { get; set; }
     
     [Column("is_active")]
     public bool IsActive { get; set; }

@@ -11,7 +11,7 @@ public class ProductConsolidatedsCategory
     public int Id { get; set; }
     
     [Column("parent_id")]
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
     
     [Column("name")]
     public string? Name { get; set; }

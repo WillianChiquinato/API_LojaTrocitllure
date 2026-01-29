@@ -207,13 +207,13 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
-                    b.Property<bool>("IsEmphasis")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_emphasis");
-
                     b.Property<string>("Name")
                         .HasColumnType("longtext")
                         .HasColumnName("name");
+
+                    b.Property<int>("SoldOutCount")
+                        .HasColumnType("int")
+                        .HasColumnName("sold_out_count");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -245,7 +245,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int")
                         .HasColumnName("parent_id");
 
@@ -311,7 +311,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(65,30)")
+                        .HasColumnType("decimal(10,2)")
                         .HasColumnName("price");
 
                     b.Property<int>("ProductId")
@@ -326,8 +326,8 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("sku_code");
 
-                    b.Property<decimal?>("Stock")
-                        .HasColumnType("decimal(65,30)")
+                    b.Property<int?>("Stock")
+                        .HasColumnType("int")
                         .HasColumnName("stock");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -705,9 +705,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.ParentCategory", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });

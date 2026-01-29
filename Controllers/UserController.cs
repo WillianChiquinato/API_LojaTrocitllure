@@ -102,7 +102,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize]
+    //[Authorize]
     [Route("GetUsers")]
     public async Task<IActionResult> GetUsers()
     {

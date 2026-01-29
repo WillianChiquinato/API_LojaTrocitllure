@@ -22,20 +22,11 @@ public class RetailService : IRetailService
         {
             var retails = await _retailRepository.GetRetails();
 
-            return new CustomResponse<List<Retail>>(
-                true,
-                new List<string>(),
-                retails,
-                retails.Count
-            );
+            return CustomResponse<List<Retail>>.SuccessTrade(retails);
         }
         catch (Exception ex)
         {
-            return new CustomResponse<List<Retail>>(
-                false,
-                new List<string> { ex.Message },
-                null
-            );
+            return CustomResponse<List<Retail>>.Fail("Erro ao buscar lojas", ex.Message);
         }
     }
 }
