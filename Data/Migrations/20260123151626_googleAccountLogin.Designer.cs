@@ -3,6 +3,7 @@ using System;
 using Api_LojaTricotllure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api_LojaTricotllure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260123151626_googleAccountLogin")]
+    partial class googleAccountLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +112,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("source");
 
-                    b.Property<DateTime?>("UnsubscribedAt")
+                    b.Property<DateTime>("UnsubscribedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("unsubscribed_at");
 
@@ -207,13 +210,13 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
+                    b.Property<bool>("IsEmphasis")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_emphasis");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext")
                         .HasColumnName("name");
-
-                    b.Property<int>("SoldOutCount")
-                        .HasColumnType("int")
-                        .HasColumnName("sold_out_count");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -245,7 +248,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int>("ParentId")
                         .HasColumnType("int")
                         .HasColumnName("parent_id");
 
@@ -311,7 +314,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(10,2)")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("price");
 
                     b.Property<int>("ProductId")
@@ -326,8 +329,8 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("sku_code");
 
-                    b.Property<int?>("Stock")
-                        .HasColumnType("int")
+                    b.Property<decimal?>("Stock")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("stock");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -543,7 +546,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("shoppingCart_id");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(10,2)")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("unit_price");
 
                     b.HasKey("Id");
@@ -705,7 +708,9 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.ParentCategory", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Parent");
                 });

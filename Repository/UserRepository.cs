@@ -57,6 +57,11 @@ public class UserRepository :  IUserRepository
         return getUserDestination;
     }
 
+    public Task<User> GetById(int id)
+    {
+        return _efDbContext.Users.SingleOrDefaultAsync(u => u.Id == id);
+    }
+
     public async Task<User?> ReadUserByCPF(string cpf_cnpj)
     {
         return await _efDbContext.Users.SingleOrDefaultAsync(ac => ac.CpfCnpj == cpf_cnpj);

@@ -11,9 +11,10 @@ public class ProductConsolidatedsController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IProductConsolidatedsService _productConsolidateds;
 
-    public ProductConsolidatedsController(AppDbContext context)
+    public ProductConsolidatedsController(AppDbContext context, IProductConsolidatedsService productConsolidateds)
     {
         _context = context;
+        _productConsolidateds = productConsolidateds;
     }
 
     [HttpGet]
@@ -23,5 +24,14 @@ public class ProductConsolidatedsController : ControllerBase
         var products = await _productConsolidateds.GetProductsConsolidateds(page, pageSize);
         
         return products.Result != null ? Ok(products) : NotFound();
+    }
+
+    [HttpGet]
+    [Route("VerifyStock")]
+    public async Task<IActionResult> VerifyStock([FromQuery] int productId, [FromQuery] string size, [FromQuery] string color, [FromQuery] int? quantity)
+    {
+        var stockVerification = await _productConsolidateds.VerifyStock(productId, size, color, quantity);
+        
+        return stockVerification.Result != null ? Ok(stockVerification) : NotFound();
     }
 }

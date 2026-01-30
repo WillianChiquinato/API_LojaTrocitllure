@@ -16,7 +16,7 @@ public class ShoppingCartItem
     [Column("productSku_id")]
     public int ProductSkuId { get; set; }
     
-    [Column("unit_price")]
+    [Column("unit_price", TypeName = "decimal(10,2)")]
     public decimal UnitPrice { get; set; }
     
     [Column("quantity")]

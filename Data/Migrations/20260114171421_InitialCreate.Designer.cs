@@ -3,6 +3,7 @@ using System;
 using Api_LojaTricotllure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,13 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api_LojaTricotllure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114171421_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Api_LojaTricotllure.Models.AdminUser", b =>
@@ -109,7 +112,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("source");
 
-                    b.Property<DateTime?>("UnsubscribedAt")
+                    b.Property<DateTime>("UnsubscribedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("unsubscribed_at");
 
@@ -207,13 +210,13 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
 
+                    b.Property<bool>("IsEmphasis")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_emphasis");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext")
                         .HasColumnName("name");
-
-                    b.Property<int>("SoldOutCount")
-                        .HasColumnType("int")
-                        .HasColumnName("sold_out_count");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)")
@@ -245,7 +248,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int>("ParentId")
                         .HasColumnType("int")
                         .HasColumnName("parent_id");
 
@@ -281,6 +284,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("is_primary");
 
                     b.Property<int?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 
@@ -311,7 +315,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(10,2)")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("price");
 
                     b.Property<int>("ProductId")
@@ -326,8 +330,8 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("sku_code");
 
-                    b.Property<int?>("Stock")
-                        .HasColumnType("int")
+                    b.Property<decimal?>("Stock")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("stock");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -426,10 +430,6 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("active");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -509,6 +509,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("updated_at");
 
                     b.Property<int?>("UserId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
@@ -543,7 +544,7 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnName("shoppingCart_id");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(10,2)")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("unit_price");
 
                     b.HasKey("Id");
@@ -586,11 +587,6 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("first_acess");
 
-                    b.Property<string>("GoogleId")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("google_id");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_active");
@@ -611,8 +607,8 @@ namespace Api_LojaTricotllure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("phoneDDD");
 
-                    b.Property<string>("PrimaryPhone")
-                        .HasColumnType("longtext")
+                    b.Property<int?>("PrimaryPhone")
+                        .HasColumnType("int")
                         .HasColumnName("primary_phone");
 
                     b.Property<string>("Sex")
@@ -705,7 +701,9 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.ParentCategory", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Parent");
                 });
@@ -714,7 +712,9 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.ProductConsolidateds", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
@@ -753,7 +753,9 @@ namespace Api_LojaTricotllure.Data.Migrations
                 {
                     b.HasOne("Api_LojaTricotllure.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

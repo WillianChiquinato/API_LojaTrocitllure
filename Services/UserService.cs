@@ -117,4 +117,18 @@ public class UserService : IUserService
             return CustomResponse<User>.Fail("Erro interno ao atualizar usuário");
         }
     }
+
+    public Task<CustomResponse<User>> GetById(int id)
+    {
+        try
+        {
+            var user = _userRepository.GetById(id);
+            
+            return Task.FromResult(CustomResponse<User>.SuccessTrade(user.Result));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(CustomResponse<User>.Fail("Erro ao buscar usuário", ex.Message));
+        }
+    }
 }

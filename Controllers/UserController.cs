@@ -110,6 +110,15 @@ public class UserController : ControllerBase
         
         return users.Result != null ? Ok(users) : NotFound();
     }
+
+    [HttpGet]
+    [Route("GetById")]
+    public async Task<IActionResult> GetById([FromQuery] int id)
+    {
+        var users = await _userService.GetById(id);
+        
+        return users.Result != null ? Ok(users) : NotFound();
+    }
     
     [HttpGet]
     [Route("GetUserByEmailAndPassword")]

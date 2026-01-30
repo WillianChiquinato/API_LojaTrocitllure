@@ -14,9 +14,9 @@ public class CustomResponse<T>
         Result = result;
         TotalRows = totalRows;
     }
-    
-    public static CustomResponse<T> SuccessTrade(T result) =>
-        new(true, new List<string>(), result);
+
+    public static CustomResponse<T> SuccessTrade(T result, int? totalRows = null) =>
+        new(true, new List<string>(), result, totalRows);
 
     public static CustomResponse<T> Fail(params string[] errors) =>
         new(false, errors.ToList(), default);

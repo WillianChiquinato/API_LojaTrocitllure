@@ -14,11 +14,38 @@ public class ProductsConsolidatedRepository : IProductConsolidatedsRepository
         _efDbContext = context;
     }
 
+    public async Task<int> GetProductsConsolidatedsTotalRows()
+    {
+        return await _efDbContext.ProductConsolidateds
+            .Where(p => p.IsActive)
+            .CountAsync();
+    }
+
     public async Task<List<ProductConsolidateds>> GetProductsConsolidateds(int page, int pageSize)
     {
         return await _efDbContext.ProductConsolidateds
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+    }
+
+    public Task<List<ProductConsolidatedsImage>> GetImagesByProductIds(List<int> productIds)
+    {
+        return _efDbContext.ProductConsolidatedsImages
+            .Where(img => img.ProductId != null && productIds.Contains(img.ProductId.Value))
+            .ToListAsync();
+    }
+
+    public Task<List<ProductConsolidatedsSku>> GetSkusByProductIds(List<int> productIds)
+    {
+        return _efDbContext.ProductConsolidatedsSkus
+            .Where(sku => productIds.Contains(sku.ProductId) && sku.IsActive)
+            .ToListAsync();
+    }
+
+    public Task<ProductConsolidatedsSku?> GetSkuByAttributes(int productId, string sizeId, string colorId)
+    {
+        return _efDbContext.ProductConsolidatedsSkus
+            .FirstOrDefaultAsync(sku => sku.ProductId == productId && sku.Size == sizeId && sku.Color == colorId && sku.IsActive);
     }
 }
