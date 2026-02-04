@@ -68,6 +68,42 @@ public class ShoppingCartRepository : IShoppingCartRepository
             TotalPrice = totalPrice
         };
     }
+
+    public async Task<ShoppingCart?> GetCartByUserId(int userId)
+    {
+        var cart = await _efDbContext.ShoppingCarts
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+        return cart ?? null;
+    }
+
+    public Task<List<ShoppingCartItemDTO>> GetItemsInCart(int shoppingCartId)
+    {
+        var items = _efDbContext.ShoppingCartItems
+            .Where(i => i.ShoppingCartId == shoppingCartId)
+            .Select(i => new ShoppingCartItemDTO
+            {
+                ShoppingCartId = i.ShoppingCartId,
+                ProductSkuId = i.ProductSkuId,
+                UnitPrice = i.UnitPrice,
+                Quantity = i.Quantity
+            }).ToListAsync();
+
+        return items;
+    }
+
+    public async Task<bool> RemoveItemFromCart(int productSkuId)
+    {
+        var item = await _efDbContext.ShoppingCartItems
+            .FirstOrDefaultAsync(x => x.ProductSkuId == productSkuId);
+
+        if (item == null)
+            return false;
+
+        _efDbContext.ShoppingCartItems.Remove(item);
+        return await _efDbContext.SaveChangesAsync() > 0;
+    }
+
     private async Task CreateProductsInCartAsync(ShoppingCart shoppingCart, ShoppingCartRequest shoppingCartRequestDTO)
     {
         foreach (var product in shoppingCartRequestDTO.Products)

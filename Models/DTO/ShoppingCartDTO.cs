@@ -14,4 +14,11 @@ namespace Api_LojaTricotllure.Models.DTO
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
     }
+
+    public class ShoppingCartResponseWithProductsDTO
+    {
+        public int UserId { get; set; }
+        public int ShoppingCartId { get; set; }
+        public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+    }
 }

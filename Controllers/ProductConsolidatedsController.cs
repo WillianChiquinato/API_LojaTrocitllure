@@ -27,6 +27,15 @@ public class ProductConsolidatedsController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GetProductsById")]
+    public async Task<IActionResult> GetProductsById([FromQuery] int productId)
+    {
+        var product = await _productConsolidateds.GetProductsById(productId);
+        
+        return product.Result != null ? Ok(product) : NotFound();
+    }
+
+    [HttpGet]
     [Route("VerifyStock")]
     public async Task<IActionResult> VerifyStock([FromQuery] int productId, [FromQuery] string size, [FromQuery] string color, [FromQuery] int? quantity)
     {

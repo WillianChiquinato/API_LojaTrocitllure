@@ -18,6 +18,50 @@ public class ProductsConsolidatedService : IProductConsolidatedsService
         _productConsolidatedsRepository = productConsolidatedsRepository;
     }
 
+    public async Task<CustomResponse<ProductDTO>> GetProductsById(int productId)
+    {
+        try
+        {
+            var product = await _productConsolidatedsRepository.GetProductById(productId);
+            if (product == null)
+            {
+                return CustomResponse<ProductDTO>.Fail("Produto não encontrado.");
+            }
+    
+            var images = await _productConsolidatedsRepository.GetImagesByProductIds(new List<int> { productId });
+            var skus = await _productConsolidatedsRepository.GetSkusByProductIds(new List<int> { productId });
+
+            var productDTO = new ProductDTO
+            {
+                Product = product,
+                Skus = skus.Select(sku => new ProductSkuDTO
+                {
+                    Id = sku.Id,
+                    ProductId = sku.ProductId,
+                    SkuCode = sku.SkuCode!,
+                    Color = sku.Color!,
+                    Size = sku.Size!,
+                    Price = sku.Price ?? 0.0m,
+                    Stock = sku.Stock ?? 0,
+                    IsActive = sku.IsActive
+                }).ToList(),
+                Images = images.Select(img => new ProductImageDTO
+                {
+                    Id = img.Id,
+                    ProductId = img.ProductId ?? 0,
+                    ImageURL = img.ImageURL,
+                    IsPrimary = img.IsPrimary
+                }).ToList()
+            };
+
+            return CustomResponse<ProductDTO>.SuccessTrade(productDTO);
+        }
+        catch (Exception e)
+        {
+            return CustomResponse<ProductDTO>.Fail("Erro ao buscar produto por ID", e.Message);
+        }
+    }
+
     public async Task<CustomResponse<List<ProductDTO>>> GetProductsConsolidateds(int page, int pageSize)
     {
         try
@@ -66,6 +110,8 @@ public class ProductsConsolidatedService : IProductConsolidatedsService
             return CustomResponse<List<ProductDTO>>.Fail("Erro ao buscar produtos consolidados", e.Message);
         }
     }
+
+    
 
     public async Task<CustomResponse<StockVerificationDTO>> VerifyStock(int productId, string sizeId, string colorId, int? quantity)
     {

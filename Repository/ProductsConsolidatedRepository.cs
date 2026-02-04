@@ -29,6 +29,12 @@ public class ProductsConsolidatedRepository : IProductConsolidatedsRepository
             .ToListAsync();
     }
 
+    public Task<ProductConsolidateds?> GetProductById(int productId)
+    {
+        return _efDbContext.ProductConsolidateds
+            .FirstOrDefaultAsync(p => p.Id == productId && p.IsActive);
+    }
+
     public Task<List<ProductConsolidatedsImage>> GetImagesByProductIds(List<int> productIds)
     {
         return _efDbContext.ProductConsolidatedsImages
@@ -47,5 +53,12 @@ public class ProductsConsolidatedRepository : IProductConsolidatedsRepository
     {
         return _efDbContext.ProductConsolidatedsSkus
             .FirstOrDefaultAsync(sku => sku.ProductId == productId && sku.Size == sizeId && sku.Color == colorId && sku.IsActive);
+    }
+
+    public Task<List<ProductConsolidateds>> GetProductsConsolidatedsBySkuId(List<int> skuIds)
+    {
+        return _efDbContext.ProductConsolidateds
+            .Where(p => skuIds.Contains(p.Id) && p.IsActive)
+            .ToListAsync();
     }
 }
