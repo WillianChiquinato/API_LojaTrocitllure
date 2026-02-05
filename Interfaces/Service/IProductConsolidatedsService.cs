@@ -9,4 +9,5 @@ public interface IProductConsolidatedsService
     public Task<CustomResponse<List<ProductDTO>>> GetProductsConsolidateds(int page, int pageSize);
     public Task<CustomResponse<StockVerificationDTO>> VerifyStock(int productId, string sizeId, string colorId, int? quantity);
     public Task<CustomResponse<ProductDTO>> GetProductsById(int productId);
+    public Task<CustomResponse<List<ProductConsolidatedsSku>>> GetSkusByProductIds(int productIds);
 }

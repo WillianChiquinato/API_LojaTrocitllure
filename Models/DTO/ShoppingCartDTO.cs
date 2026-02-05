@@ -13,6 +13,7 @@ namespace Api_LojaTricotllure.Models.DTO
         public int ProductSkuId { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
+        public DateTime Created { get; set; }
     }
 
     public class ShoppingCartResponseWithProductsDTO

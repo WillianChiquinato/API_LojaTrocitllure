@@ -10,5 +10,6 @@ public interface IProductConsolidatedsRepository
     Task<List<ProductConsolidateds>> GetProductsConsolidateds(int page, int pageSize);
     Task<List<ProductConsolidatedsImage>> GetImagesByProductIds(List<int> productIds);
     Task<List<ProductConsolidatedsSku>> GetSkusByProductIds(List<int> productIds);
+    Task<ProductConsolidatedsSku?> GetSkuBySkuId(int skuId);
     Task<List<ProductConsolidateds>> GetProductsConsolidatedsBySkuId(List<int> skuIds);
 }

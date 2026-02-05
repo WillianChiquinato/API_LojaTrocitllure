@@ -62,6 +62,20 @@ public class ProductsConsolidatedService : IProductConsolidatedsService
         }
     }
 
+    public async Task<CustomResponse<List<ProductConsolidatedsSku>>> GetSkusByProductIds(int productIds)
+    {
+        try
+        {
+            var skuProductId = await _productConsolidatedsRepository.GetSkusByProductIds(new List<int>( productIds));
+            
+            return CustomResponse<List<ProductConsolidatedsSku>>.SuccessTrade(skuProductId);
+        }
+        catch (Exception e)
+        {
+            return CustomResponse<List<ProductConsolidatedsSku>>.Fail("Erro ao buscar SKU por ID", e.Message);
+        }
+    }
+
     public async Task<CustomResponse<List<ProductDTO>>> GetProductsConsolidateds(int page, int pageSize)
     {
         try

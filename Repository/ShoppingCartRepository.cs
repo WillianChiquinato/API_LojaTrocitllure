@@ -46,18 +46,19 @@ public class ShoppingCartRepository : IShoppingCartRepository
             await _efDbContext.SaveChangesAsync();
         }
 
-        await CreateProductsInCartAsync(shoppingCart, shoppingCartRequestDTO);
+        var createdItems = await CreateProductsInCartAsync(
+            shoppingCart,
+            shoppingCartRequestDTO
+        );
 
-        // Montar DTO de retorno
-        var items = await _efDbContext.ShoppingCartItems
-            .Where(i => i.ShoppingCartId == shoppingCart.Id)
-            .Select(i => new ShoppingCartItemDTO
-            {
-                ShoppingCartId = i.ShoppingCartId,
-                ProductSkuId = i.ProductSkuId,
-                UnitPrice = i.UnitPrice,
-                Quantity = i.Quantity
-            }).ToListAsync();
+        var items = createdItems.Select(i => new ShoppingCartItemDTO
+        {
+            ShoppingCartId = i.ShoppingCartId,
+            ProductSkuId = i.ProductSkuId,
+            UnitPrice = i.UnitPrice,
+            Quantity = i.Quantity,
+            Created = i.CreatedAt ?? DateTime.UtcNow,
+        }).ToList();
 
         var totalPrice = items.Sum(i => i.UnitPrice * i.Quantity);
 
@@ -86,8 +87,11 @@ public class ShoppingCartRepository : IShoppingCartRepository
                 ShoppingCartId = i.ShoppingCartId,
                 ProductSkuId = i.ProductSkuId,
                 UnitPrice = i.UnitPrice,
-                Quantity = i.Quantity
-            }).ToListAsync();
+                Quantity = i.Quantity,
+                Created = i.CreatedAt ?? DateTime.UtcNow,
+            })
+            .OrderByDescending(p => p.Created)
+            .ToListAsync();
 
         return items;
     }
@@ -104,26 +108,35 @@ public class ShoppingCartRepository : IShoppingCartRepository
         return await _efDbContext.SaveChangesAsync() > 0;
     }
 
-    private async Task CreateProductsInCartAsync(ShoppingCart shoppingCart, ShoppingCartRequest shoppingCartRequestDTO)
+    private async Task<List<ShoppingCartItem>> CreateProductsInCartAsync(
+        ShoppingCart shoppingCart,
+        ShoppingCartRequest shoppingCartRequestDTO)
     {
+        var affectedItems = new List<ShoppingCartItem>();
+
         foreach (var product in shoppingCartRequestDTO.Products)
         {
             var sku = await _efDbContext.ProductConsolidatedsSkus
-                .FirstOrDefaultAsync(s => s.ProductId == product.ProductId
-                    && s.Color == product.Color
-                    && s.Size == product.Size);
+                .FirstOrDefaultAsync(s =>
+                    s.ProductId == product.ProductId &&
+                    s.Color == product.Color &&
+                    s.Size == product.Size);
 
             if (sku == null)
                 continue;
 
             var existingItem = await _efDbContext.ShoppingCartItems
-                .FirstOrDefaultAsync(i => i.ShoppingCartId == shoppingCart.Id && i.ProductSkuId == sku.Id);
+                .FirstOrDefaultAsync(i =>
+                    i.ShoppingCartId == shoppingCart.Id &&
+                    i.ProductSkuId == sku.Id);
 
             if (existingItem != null)
             {
                 existingItem.Quantity += product.Quantity;
                 existingItem.UnitPrice = sku.Price ?? 0;
                 existingItem.CreatedAt = DateTime.UtcNow;
+
+                affectedItems.Add(existingItem);
             }
             else
             {
@@ -132,12 +145,16 @@ public class ShoppingCartRepository : IShoppingCartRepository
                     ShoppingCartId = shoppingCart.Id,
                     ProductSkuId = sku.Id,
                     UnitPrice = sku.Price ?? 0,
-                    Quantity = shoppingCartRequestDTO.Products.First(p => p.ProductId == sku.ProductId && p.Size == sku.Size && p.Color == sku.Color).Quantity,
+                    Quantity = product.Quantity,
                     CreatedAt = DateTime.UtcNow
                 };
+
                 _efDbContext.ShoppingCartItems.Add(cartItem);
+                affectedItems.Add(cartItem);
             }
         }
+
         await _efDbContext.SaveChangesAsync();
+        return affectedItems;
     }
 }

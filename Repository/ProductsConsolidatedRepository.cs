@@ -48,6 +48,12 @@ public class ProductsConsolidatedRepository : IProductConsolidatedsRepository
             .Where(sku => productIds.Contains(sku.ProductId) && sku.IsActive)
             .ToListAsync();
     }
+    
+    public Task<ProductConsolidatedsSku?> GetSkuBySkuId(int skuId)
+    {
+        return _efDbContext.ProductConsolidatedsSkus
+            .FirstOrDefaultAsync(sku => sku.Id == skuId && sku.IsActive);
+    }
 
     public Task<ProductConsolidatedsSku?> GetSkuByAttributes(int productId, string sizeId, string colorId)
     {
