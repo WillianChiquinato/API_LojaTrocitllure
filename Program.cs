@@ -10,6 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(10000);
+});
+
 var connectionString =
     $"Server={Environment.GetEnvironmentVariable("DB_SERVER")};" +
     $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
