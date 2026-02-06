@@ -7,12 +7,9 @@ using Api_LojaTricotllure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-//Rodar local
-// DotNetEnv.Env.Load();
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://+:10000");
-
 var connectionString =
     $"Server={Environment.GetEnvironmentVariable("DB_SERVER")};" +
     $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
@@ -30,12 +27,14 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
+
 builder.Services.AddControllers();
 builder.Services.AddScoped<TokenService>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -45,27 +44,31 @@ builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var key = builder.Configuration["Jwt:Key"]
-            ?? Environment.GetEnvironmentVariable("JWT_KEY");
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            )
         };
     });
 
 var app = builder.Build();
 
 app.UseCors("AllowFrontend");
-app.UseSwagger();
-app.UseSwaggerUI();
 
-//Rodar local
-// app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
