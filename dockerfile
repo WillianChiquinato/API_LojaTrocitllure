@@ -14,4 +14,4 @@ COPY --from=build /out .
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-ENTRYPOINT ["dotnet", "API-LojaTricotllure.dll"]
+ENTRYPOINT ["dotnet", "Api-LojaTricotllure.dll"]
